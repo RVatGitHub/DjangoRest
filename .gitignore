@@ -1,4 +1,14 @@
-app/**/__pycache__/
+# Ignore Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Ignore virtual environment directories
 .env/
 .venv/
 venv/
+
+# Ignore specific directories under 'app'
+app/**/__pycache__/
+app/**/app/__pycache__/

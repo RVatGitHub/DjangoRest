@@ -26,8 +26,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-
-class TagViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+#understand meaning of these Base class that are being extended
+class TagViewSet(
+    mixins.DestroyModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+    ):
 
     serializer_class = serializers.TagSerializer
     queryset = Tag.objects.all()

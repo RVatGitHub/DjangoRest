@@ -7,9 +7,10 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Ingredient
+from core.models import Ingredient, Recipe
 
 from recipe.serializers import IngredientSerializer
+from decimal import Decimal
 
 
 INGREDIENTS_URL = reverse('recipe:ingredient-list')
@@ -85,3 +86,27 @@ class PrivateIngredientsAPITests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         ingredient = Ingredient.objects.filter(user=self.user)
         self.assertFalse(ingredient.exists())
+
+
+    def test_filtered_ingredients_unique(self):
+        ing = Ingredient.objects.create(user=self.user, name='Eggs')
+        Ingredient.objects.create(user=self.user, name='Lentils')
+        recipe1 = Recipe.objects.create(
+            title = 'Eggs bene',
+            time_minutes = 20,
+            price = Decimal(2.44),
+            user = self.user,
+        )
+        recipe2 = Recipe.objects.create(
+            title = 'Eggs herb',
+            time_minutes = 30,
+            price = Decimal(3.44),
+            user = self.user,
+        )
+
+        recipe1.ingredients.add(ing)
+        recipe2.ingredients.add(ing)
+
+        res = self.client.get(INGREDIENTS_URL, {'assigned_only': 1})
+
+        self.assertEqual(len(res.data),1)

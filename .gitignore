@@ -12,3 +12,6 @@ venv/
 # Ignore specific directories under 'app'
 app/**/__pycache__/
 app/**/app/__pycache__/
+
+
+.env
